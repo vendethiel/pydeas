@@ -5,11 +5,17 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
+
 
 class Idea(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 
 class Implementation(models.Model):
@@ -18,6 +24,9 @@ class Implementation(models.Model):
     repo_url = models.CharField(max_length=200)
     demo_url = models.CharField(max_length=200)
     validated = models.BooleanField()
+
+    def __str__(self):
+        return "%s'd %s" % (self.author.username, self.idea.name)
 
 
 # TODO comments
