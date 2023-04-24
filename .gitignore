@@ -1,0 +1,7 @@
+.idea
+bin
+include
+lib
+*.sqlite3
+*.iml
+*.cfg
