@@ -1,17 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.views import generic
 from .models import Category, Idea
 
 
-def list_categories(request):
-    categories = Category.objects.all()
-    return render(request, "categories/index.html", {"categories": categories})
+class ListCategoriesView(generic.ListView):
+    model = Category
+    template_name = "categories/index.html"
+    context_object_name = "categories"
 
 
-def show_category(request, category_id):
-    category = get_object_or_404(Category, pk=category_id)
-    return render(request, "categories/show.html", {"category": category})
+class ShowCategoryView(generic.DetailView):
+    model = Category
+    template_name = "categories/show.html"
 
 
-def show_idea(request, idea_id):
-    idea = get_object_or_404(Idea, pk=idea_id)
-    return render(request, "ideas/show.html", {"idea": idea})
+class ShowIdeaView(generic.DetailView):
+    model = Idea
+    template_name = "ideas/show.html"
