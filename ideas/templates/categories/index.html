@@ -1,0 +1,10 @@
+{% if categories %}
+    <h1>Categories</h1>
+    <ul>
+    {% for category in categories %}
+        <li><a href="{% url 'ideas:category' category.id %}">{{ category.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <h1>No Categories Created Yet!</h1>
+{% endif %}

@@ -1,0 +1,6 @@
+<h1>{{ category.name }}</h1>
+<ul>
+    {% for idea in category.ideas.all %}
+        <li><a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a></li>
+    {% endfor %}
+</ul>
