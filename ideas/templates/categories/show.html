@@ -1,10 +1,14 @@
-{% extends "layout.html" %}
+{% extends "application/layout.html" %}
 
 {% block content %}
     <h1>{{ category.name }}</h1>
     <ul>
         {% for idea in category.ideas.all %}
-            <li><a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a></li>
+            <li><a href="{% url 'ideas:idea' category.id idea.id %}">{{ idea.name }}</a></li>
         {% endfor %}
     </ul>
+
+    {% if perms.ideas.add_idea %}
+        <a href="{% url 'ideas:idea_new' category.id %}">Submit Idea</a>
+    {% endif %}
 {% endblock %}

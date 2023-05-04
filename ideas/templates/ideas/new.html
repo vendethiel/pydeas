@@ -1,0 +1,11 @@
+{% extends "application/layout.html" %}
+
+{% block content %}
+    <form action="{% url 'ideas:idea_new' %}" method="post">
+        {% csrf_token %}
+        {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
+        <input name="category_id" type="hidden" value="{{ category_id }}"/>
+    </form>
+{% endblock %}
