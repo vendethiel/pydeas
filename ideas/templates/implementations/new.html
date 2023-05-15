@@ -1,0 +1,14 @@
+{% extends "application/layout.html" %}
+
+{% block content %}
+    <h3>New Implementation in <a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a></h3>
+    <form action="{% url 'ideas:implementation_new' %}?idea_id={{ idea.id }}" method="post">
+        {% csrf_token %}
+        {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
+        <input name="idea_id" type="hidden" value="{{ idea.id }}"/>
+        {{ form.as_p }}
+        <input type="submit" value="Submit Implementation"/>
+    </form>
+{% endblock %}

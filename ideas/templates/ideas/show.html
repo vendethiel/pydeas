@@ -3,6 +3,22 @@
 {% block content %}
     <h1><a href="{% url 'ideas:category' idea.category.id %}">{{ idea.category.name }}</a> &bull; {{ idea.name }}</h1>
     {# TODO if not validated+can validate, show button #}
+    {# TODO submitted by + profile link #}
 
+    {% if implementations %}
+        <h3>Implementations</h3>
+        <ul>
+            {% for implementation in implementations %}
+                <li>
+                    <a href="{% url 'ideas:implementation' implementation.id %}">Implementation</a> by
+                    {{ implementation.author.username }} {# TODO user profile link #}
+                    XXX more info</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if perms.ideas.add_implementation %}
+        <a href="{% url 'ideas:implementation_new' %}?idea_id={{ idea.id }}">Submit Implementation</a>
+    {% endif %}
 
 {% endblock %}

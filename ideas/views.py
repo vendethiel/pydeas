@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from .helpers.user import auto_approve, can_see_unvalidated
-from .models import Category, Idea
+from .models import Category, Idea, Implementation
 
 
 def validated_filter(qs, user):
@@ -27,7 +27,7 @@ class ShowCategoryView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs) # This populates 'category'
-        kwargs['ideas'] = self.validated_filter(kwargs['category'].idea_set)
+        kwargs['ideas'] = self.validated_filter(kwargs['category'].idea_set).prefetch_related('author')
         return kwargs
 
     def validated_filter(self, qs):
@@ -39,9 +39,15 @@ class ShowIdeaView(generic.DetailView):
     template_name = "ideas/show.html"
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
+        kwargs = super().get_context_data(**kwargs) # This populates 'idea'
+        kwargs['implementations'] = self.validated_filter(kwargs['idea'].idea_set).prefetch_related('author')
+        return kwargs
+
+    def validated_filter(self, qs):
+        return validated_filter(qs, self.request.user)
 
 
+# TODO perms.idea_new
 class NewIdeaView(generic.CreateView, LoginRequiredMixin):
     template_name = "ideas/new.html"
     model = Idea
@@ -57,16 +63,54 @@ class NewIdeaView(generic.CreateView, LoginRequiredMixin):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        # TODO make sure user has no idea in that category pending
         form.instance.category = self.category
+        form.instance.author = self.request.user
         form.instance.validated = self.auto_approve()
         return super().form_valid(form)
 
     def get_success_url(self):
-        category_id = self.category.id
         if self.auto_approve():
-            return reverse_lazy('ideas:idea', kwargs={'category_id': category_id, 'pk': self.object.id})
+            return reverse_lazy('ideas:idea', kwargs={'pk': self.object.id})
         else:
-            return reverse_lazy('ideas:category', kwargs={'category_id': category_id})
+            return reverse_lazy('ideas:category', kwargs={'pk': (self.category.id)})
+
+    def auto_approve(self):
+        return auto_approve(self.request.user)
+
+
+class ShowImplementationView(generic.DetailView):
+    model = Idea
+    template_name = "implementations/show.html"
+
+
+# TODO perms.implementation_new
+class NewImplementationView(generic.CreateView, LoginRequiredMixin):
+    template_name = "implementations/new.html"
+    model = Implementation
+    fields = ("repo_url", "demo_url") # TODO comment?
+
+    def dispatch(self, request, *args, **kwargs):
+        idea_id = request.GET['idea_id']
+        self.idea = get_object_or_404(Idea, pk=idea_id)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        kwargs['idea'] = self.idea
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        # TODO make sure user has no impl in that idea pending
+        form.instance.idea = self.idea
+        form.instance.author = self.request.user
+        form.instance.validated = self.auto_approve()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if self.auto_approve():
+            return reverse_lazy('ideas:implementation', kwargs={'pk': self.object.id})
+        else:
+            return reverse_lazy('ideas:idea', kwargs={'pk': self.idea.id})
 
     def auto_approve(self):
         return auto_approve(self.request.user)

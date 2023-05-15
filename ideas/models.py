@@ -14,6 +14,7 @@ class Category(models.Model):
 
 class Idea(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField()
     validated = models.BooleanField()
@@ -27,6 +28,7 @@ class Implementation(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     repo_url = models.CharField(max_length=200)
     demo_url = models.CharField(max_length=200)
+    # TODO more info, like language maybe?
     validated = models.BooleanField()
 
     def __str__(self):
