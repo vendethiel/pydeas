@@ -1,11 +1,14 @@
 {% extends "application/layout.html" %}
 
 {% block content %}
-    <form action="{% url 'ideas:idea_new' %}" method="post">
+    <h3>New Idea in <a href="{% url 'ideas:category' category.id %}">{{ category.name }}</a></h3>
+    <form action="{% url 'ideas:idea_new' %}?category_id={{ category_id }}" method="post">
         {% csrf_token %}
         {% if error_message %}
             <p><strong>{{ error_message }}</strong></p>
         {% endif %}
         <input name="category_id" type="hidden" value="{{ category_id }}"/>
+        {{ form.as_p }}
+        <input type="submit" value="Submit Idea"/>
     </form>
 {% endblock %}

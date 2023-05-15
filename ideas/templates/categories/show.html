@@ -3,12 +3,15 @@
 {% block content %}
     <h1>{{ category.name }}</h1>
     <ul>
-        {% for idea in category.ideas.all %}
-            <li><a href="{% url 'ideas:idea' category.id idea.id %}">{{ idea.name }}</a></li>
+        {% for idea in ideas.all %}
+            <li>
+                {# TODO if not validated, strikethrough #}
+                <a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a>
+            </li>
         {% endfor %}
     </ul>
 
     {% if perms.ideas.add_idea %}
-        <a href="{% url 'ideas:idea_new' category.id %}">Submit Idea</a>
+        <a href="{% url 'ideas:idea_new' %}?category_id={{ category.id }}">Submit Idea</a>
     {% endif %}
 {% endblock %}
