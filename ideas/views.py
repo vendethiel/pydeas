@@ -82,7 +82,7 @@ class NewIdeaView(generic.CreateView, LoginRequiredMixin):
 
 
 class ShowImplementationView(generic.DetailView):
-    model = Idea
+    model = Implementation
     template_name = "implementations/show.html"
 
 
