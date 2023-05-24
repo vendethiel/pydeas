@@ -27,7 +27,8 @@ class ShowCategoryView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs) # This populates 'category'
-        kwargs['ideas'] = self.validated_filter(kwargs['category'].idea_set).prefetch_related('author')
+        ideas = self.validated_filter(kwargs['category'].idea_set).prefetch_related('author')
+        kwargs['ideas'] = ideas
         return kwargs
 
     def validated_filter(self, qs):
@@ -40,7 +41,8 @@ class ShowIdeaView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs) # This populates 'idea'
-        kwargs['implementations'] = self.validated_filter(kwargs['idea'].idea_set).prefetch_related('author')
+        implementations = self.validated_filter(kwargs['idea'].implementation_set).prefetch_related('author')
+        kwargs['implementations'] = implementations
         return kwargs
 
     def validated_filter(self, qs):
