@@ -65,7 +65,7 @@ class NewIdeaView(generic.CreateView, LoginRequiredMixin):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        # TODO make sure user has no idea in that category pending
+        # TODO is_valid(): make sure user has no idea in that category pending
         form.instance.category = self.category
         form.instance.author = self.request.user
         form.instance.validated = self.auto_approve()
@@ -90,7 +90,7 @@ class ShowImplementationView(generic.DetailView):
 class NewImplementationView(generic.CreateView, LoginRequiredMixin):
     template_name = "implementations/new.html"
     model = Implementation
-    fields = ("repo_url", "demo_url") # TODO comment?
+    fields = ("repo_url", "demo_url")  # TODO comment?
 
     def dispatch(self, request, *args, **kwargs):
         idea_id = request.GET['idea_id']
@@ -102,7 +102,7 @@ class NewImplementationView(generic.CreateView, LoginRequiredMixin):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        # TODO make sure user has no impl in that idea pending
+        # TODO is_valid(): make sure user has no impl in that idea pending
         form.instance.idea = self.idea
         form.instance.author = self.request.user
         form.instance.validated = self.auto_approve()
