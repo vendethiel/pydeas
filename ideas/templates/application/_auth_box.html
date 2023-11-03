@@ -1,5 +1,9 @@
 {% if user.is_authenticated %}
-    Welcome, {{ user.username }} &bull; <a href="{% url 'logout' %}">Log Out</a>.
+    Welcome, {{ user.username }} &bull; <a href="{% url 'logout' %}">Log Out</a>
+    {% if user.is_superuser %}
+        {# TODO url 'admin' #}
+        &bull; <a href="/admin">Control Panel</a>
+    {% endif %}
 {% else %}
     <a href="{% url 'login' %}">Login Here</a> &bull; <a href="{% url 'ideas:signup' %}">Create Account</a>.
 {% endif %}

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import categories, ideas, implementations, user
+from .views import categories, ideas, implementations, accounts
 
 app_name = 'ideas'
 urlpatterns = [
@@ -14,5 +14,5 @@ urlpatterns = [
     path('implementations/<int:pk>', implementations.ShowImplementationView.as_view(), name='implementation'),
     path('implementations/new', implementations.NewImplementationView.as_view(), name='implementation_new'),
 
-    path('signup', user.SignupView.as_view(), name='signup')
+    path('signup', accounts.SignupView.as_view(), name='signup')
 ]
