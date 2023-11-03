@@ -4,8 +4,8 @@
     {% if ideas %}
         <ul>
         {% for idea in ideas %}
-                <!-- TODO profile links -->
-                <!-- TODO timestamp -->
+            <!-- TODO profile links -->
+            <!-- TODO timestamp -->
             <li><a href="{% url 'idea:validate' idea.id %}">Validate</a><br/>
                 <a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a>
                 by {{ idea.author.name }}</li>

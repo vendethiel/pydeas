@@ -5,5 +5,9 @@
     <h1>Implementation of
         <a href="{% url 'ideas:idea' implementation.idea.id %}">{{ implementation.idea.name }}</a>
         by {{ implementation.author.username }}</h1>
+    {% if implementation.demo_url %} {# TODO not empty/blank #}
+        <a href="{{ implementation.demo_url }}">Click here to see a demo</a><br/>
+    {% endif %}
+    <a href="{{ implementation.repo_url }}">Click here to see the code repository</a><br/>
     {# TODO demo_url + repo_url + comment maybe? #}
 {% endblock %}

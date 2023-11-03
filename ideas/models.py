@@ -28,12 +28,33 @@ class Implementation(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     repo_url = models.CharField(max_length=200)
     demo_url = models.CharField(max_length=200)
-    # TODO more info, like language maybe?
+    # TODO more info, like notes/comment/language maybe?
     validated = models.BooleanField()
 
     def __str__(self):
-        return "%s'd %s" % (self.author.username, self.idea.name)
+        return f"{self.author.username}'s {self.idea.name}"
 
+
+class Report(models.Model):
+    model_name = models.CharField(max_length=200)
+    model_id = models.IntegerField() # Cannot make it a FK because of polymorphism
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()
+    resolved_at = models.DateTimeField(null=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    # TODO validate model_name
+    # TODO composite PK (model_name, model_id)
+
+    @staticmethod
+    def is_reportable(name):
+        return name == 'idea' or name == 'implementation'
+
+    def is_resolved(self):
+        return self.resolved_by is not None
+
+    def __str__(self):
+        return f"Report on {self.model_name} #{self.model_id} by {self.reporter.username}"
 
 # TODO comments
 # TODO screenshots

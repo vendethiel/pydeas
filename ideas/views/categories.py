@@ -16,6 +16,7 @@ class ShowCategoryView(generic.DetailView):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)  # This populates 'category'
         kwargs['ideas'] = self.ideas_for_category(kwargs['category'])
+        # TODO show reports associated?
         return kwargs
 
     def ideas_for_category(self, category: Category):

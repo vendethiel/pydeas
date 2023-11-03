@@ -15,6 +15,7 @@ class ShowIdeaView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)  # This populates 'idea'
+        # TODO show reports associated?
         kwargs['implementations'] = self.implementations_for_idea(kwargs['idea'])
         return kwargs
 
@@ -56,7 +57,7 @@ class NewIdeaView(generic.CreateView, LoginRequiredMixin):
 
 
 class RecentIdeasView(generic.ListView):
-    model = "Idea"
+    model = Idea
     template_name = "ideas/recent.html"
     context_object_name = "ideas"
 
@@ -78,7 +79,7 @@ class ValidateIdea(generic.View, PermissionRequiredMixin):
     permission_required = "validate_idea"
 
     def get(self, request, *args, **kwargs):
-        # TODO handle AJaX submit, just return OK/NOT OK
+        # TODO handle async submit, just return OK/NOT OK
         idea_id = kwargs['pk']
         idea = get_object_or_404(Idea, pk=idea_id)
         idea.validated = True

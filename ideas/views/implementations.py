@@ -16,7 +16,7 @@ class ShowImplementationView(generic.DetailView):
 class NewImplementationView(generic.CreateView, LoginRequiredMixin):
     template_name = "implementations/new.html"
     model = Implementation
-    fields = ("repo_url", "demo_url")  # TODO comment?
+    fields = ("repo_url", "demo_url")  # TODO name/comment?
 
     def dispatch(self, request, *args, **kwargs):
         idea_id = request.GET['idea_id']
