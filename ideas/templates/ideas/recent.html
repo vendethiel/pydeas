@@ -1,0 +1,16 @@
+{% extends "application/layout.html" %}
+
+{% block content %}
+    {% if ideas %}
+        <ul>
+        {% for idea in ideas %}
+            <!-- TODO profile links -->
+            <!-- TODO timestamp -->
+            <li><a href="{% url 'ideas:idea' idea.id %}">{{ idea.name }}</a>
+                by {{ idea.author.name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No ideas in queue :)</h1>
+    {% endif %}
+{% endblock %}

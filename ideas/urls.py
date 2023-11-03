@@ -1,13 +1,18 @@
 from django.urls import path
-from . import views
+from .views import categories, ideas, implementations, user
 
 app_name = 'ideas'
 urlpatterns = [
-    path('', views.ListCategoriesView.as_view(), name='index'),
-    path('categories/<int:pk>', views.ShowCategoryView.as_view(), name='category'),
-    path('ideas/<int:pk>', views.ShowIdeaView.as_view(), name='idea'),
-    path('ideas/new', views.NewIdeaView.as_view(), name='idea_new'),
-    path('implementations/<int:pk>', views.ShowImplementationView.as_view(), name='implementation'),
-    path('implementations/new', views.NewImplementationView.as_view(), name='implementation_new'),
-    path('signup', views.SignupView.as_view(), name='signup')
+    path('', categories.ListCategoriesView.as_view(), name='index'),
+    path('categories/<int:pk>', categories.ShowCategoryView.as_view(), name='category'),
+
+    path('ideas/<int:pk>', ideas.ShowIdeaView.as_view(), name='idea'),
+    path('ideas/<int:pk>/validate', ideas.ValidateIdea.as_view(), name='idea_queue'),
+    path('ideas/new', ideas.NewIdeaView.as_view(), name='idea_new'),
+    path('ideas/queue', ideas.PendingIdeaQueueView.as_view(), name='idea_queue'),
+
+    path('implementations/<int:pk>', implementations.ShowImplementationView.as_view(), name='implementation'),
+    path('implementations/new', implementations.NewImplementationView.as_view(), name='implementation_new'),
+
+    path('signup', user.SignupView.as_view(), name='signup')
 ]
