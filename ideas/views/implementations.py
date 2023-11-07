@@ -4,12 +4,19 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from ideas.helpers.user import auto_approve
-from ideas.models import Idea, Implementation
+from ideas.models import Idea, Implementation, Report
 
 
 class ShowImplementationView(generic.DetailView):
     model = Implementation
     template_name = "implementations/show.html"
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        if user.is_authenticated:
+            is_reported = Report.is_implementation_reported(self.object.id)
+            kwargs['can_report'] = not is_reported
+        return super().get_context_data(**kwargs)
 
 
 # TODO perms.implementation_new

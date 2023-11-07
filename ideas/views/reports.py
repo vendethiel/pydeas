@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import get_object_or_404
 from django.views import generic
 
-from models import Report, Idea, Implementation
+from ideas.models import Report, Idea, Implementation
 
 
 class ListReportView(generic.ListView, PermissionRequiredMixin):
@@ -22,7 +22,7 @@ class ListReportView(generic.ListView, PermissionRequiredMixin):
 
 class ShowReportView(generic.DetailView, PermissionRequiredMixin):
     model = Report
-    template_name = "report/show.html"
+    template_name = "reports/show.html"
 
     permission_required = "see_report"
 
@@ -34,11 +34,11 @@ class ActionReportView(generic.View, PermissionRequiredMixin):
         # TODO kwargs? really?
         object_model_name = kwargs['object_model_name']
         if not Report.is_reportable(object_model_name):
-            pass # TODO error
+            pass  # TODO error
         object_id = kwargs['object_id']
         report = Report.objects.filter(object_model_name=object_model_name, object_id=object_id).first()
         if report.resolved_by is not None:
-            pass # TODO error
+            pass  # TODO error
         report.resolved_by = request.user
         report.resolved_at = datetime.now()
 
@@ -49,29 +49,40 @@ class ActionReportView(generic.View, PermissionRequiredMixin):
         # )
 
 
-
 class NewReportView(generic.CreateView, LoginRequiredMixin):
     model = Report
-    template_name = "report/new.html"
-    fields = ("model_id", "comment")
+    template_name = "reports/new.html"
+    fields = ("comment",)
     object_model = None
     object_model_name = None
 
     def dispatch(self, request, *args, **kwargs):
-        object_id = request.GET['object_id']
-        self.object = get_object_or_404(self.object_model, pk=object_id)
+        pk = request.GET['pk']
+        self.instance = get_object_or_404(self.object_model, pk=pk)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        kwargs['object'] = self.object
+        print(self.instance)
+        kwargs['instance'] = self.instance
         kwargs['model_name'] = self.object_model_name
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        # TODO is_valid(): make sure user has no report of that idea/impl pending
-        form.instance.author = self.request.user
+        if not self._can_be_reported():
+            return super().form_invalid(form)
+
+        form.instance.reporter = self.request.user
+        form.instance.model_id = self.instance.id
         form.instance.model_name = self.object_model_name
         return super().form_valid(form)
+
+    # XXX should this be an override on the Form object itself?
+    def _can_be_reported(self):
+        report = Report.report(self.object_model_name, self.instance.id)
+        if report is None:
+            return True
+        # Already reported this instance (whether closed or not)
+        return report.reporter is not self.request.user
 
 
 class NewIdeaReportView(NewReportView):
@@ -81,4 +92,4 @@ class NewIdeaReportView(NewReportView):
 
 class NewImplementationReportView(NewReportView):
     object_model = Implementation
-    object_model_name = 'idea'
+    object_model_name = 'implementation'

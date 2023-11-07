@@ -10,4 +10,8 @@
     {% endif %}
     <a href="{{ implementation.repo_url }}">Click here to see the code repository</a><br/>
     {# TODO demo_url + repo_url + comment maybe? #}
+
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'ideas:report_implementation_new' %}?pk={{ implementation.id }}">Report this idea</a></p>
+    {% endif %}
 {% endblock %}

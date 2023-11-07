@@ -1,6 +1,6 @@
 from django.urls import path
 
-from views import categories, ideas, implementations, accounts, reports
+from .views import categories, ideas, implementations, accounts, reports
 
 app_name = 'ideas'
 urlpatterns = [
@@ -16,8 +16,8 @@ urlpatterns = [
     path('implementations/new', implementations.NewImplementationView.as_view(), name='implementation_new'),
 
     path('report/<int:pk>', reports.ShowReportView.as_view(), name='report'),
-    path('report/idea/new', reports.NewIdeaReportView.as_view(), name='report_idea_new'),
-    path('report/implementation/new', reports.NewImplementationReportView.as_view(), name='report_implementation_new'),
+    path('report/idea', reports.NewIdeaReportView.as_view(), name='report_idea_new'),
+    path('report/implementation', reports.NewImplementationReportView.as_view(), name='report_implementation_new'),
 
     path('signup', accounts.SignupView.as_view(), name='signup')
 ]
